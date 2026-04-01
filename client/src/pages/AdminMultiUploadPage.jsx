@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { UploadCloud, Images } from "lucide-react";
+import { UploadCloud, Images, ArrowRight } from "lucide-react";
 import API from "../services/api";
 
 function AdminMultiUploadPage() {
@@ -186,9 +186,17 @@ function AdminMultiUploadPage() {
           </div>
 
           <div className="admin-card admin-card-modern" style={{ marginTop: "24px" }}>
-            <div className="admin-card-head">
-              <p className="section-label">Album Photos</p>
-              <h2>Uploaded images</h2>
+            <div className="admin-card-head section-head-row">
+              <div>
+                <p className="section-label">Album Photos</p>
+                <h2>Uploaded images</h2>
+              </div>
+
+              {albumPhotos.length > 0 && (
+                <Link to={`/gallery/${id}`} className="section-link">
+                  View album <ArrowRight size={16} />
+                </Link>
+              )}
             </div>
 
             {albumPhotos.length === 0 ? (
