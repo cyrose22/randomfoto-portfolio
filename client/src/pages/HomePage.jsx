@@ -64,14 +64,12 @@ function HomePage() {
 
       <section className="hero hero-modern">
         <div className="hero-text">
-          {/* <span className="badge">Photography Portfolio</span> */}
-
           <h2 className="hero-title-modern">
             Random shots,
             <br />
             street moments,
             <br />
-            <span> raw photography</span>
+            <span>raw photography</span>
           </h2>
 
           <p className="hero-subtext">
@@ -82,9 +80,6 @@ function HomePage() {
             <Link to="/gallery" className="btn btn-primary">
               View Gallery
             </Link>
-            {/* <Link to="/admin" className="btn btn-secondary">
-              Admin Upload
-            </Link> */}
           </div>
         </div>
 
@@ -95,12 +90,12 @@ function HomePage() {
                 coverPhoto?.imageUrl ||
                 "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=80"
               }
-              alt={coverPhoto?.title || "Cover photo"}
+              alt={coverPhoto?.title || "Featured cover"}
             />
           </div>
 
           <div className="hero-floating-card">
-            <p>{coverPhoto?.category || "Featured Theme"}</p>
+            <p>Featured cover</p>
             <h3>{coverPhoto?.title || "Motorcycle Frames"}</h3>
             <Link to="/gallery" className="hero-inline-link">
               Explore gallery <ArrowRight size={16} />
@@ -132,7 +127,9 @@ function HomePage() {
             <h3>
               {
                 allGalleryPhotos.filter((photo) =>
-                  String(photo.category || "").toLowerCase().includes("motorcycle")
+                  String(photo.category || "")
+                    .toLowerCase()
+                    .includes("motorcycle")
                 ).length
               }
             </h3>

@@ -860,3 +860,127 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 768px) {
+  .app {
+    padding: 20px 14px 50px;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .nav-links {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    gap: 18px;
+    font-size: 0.95rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-modern,
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-top: 10px;
+  }
+
+  .hero-title-modern {
+    font-size: 2.6rem;
+    line-height: 0.98;
+    max-width: 100%;
+  }
+
+  .hero-subtext {
+    font-size: 0.98rem;
+    line-height: 1.65;
+    max-width: 100%;
+  }
+
+  .hero-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-showcase {
+    min-height: auto;
+    display: block;
+  }
+
+  .hero-image-frame {
+    max-width: 100%;
+    padding: 10px;
+    border-radius: 28px;
+  }
+
+  .hero-image-frame img {
+    height: 280px;
+    object-fit: contain;
+    padding: 6px;
+    border-radius: 20px;
+  }
+
+  .hero-floating-card {
+    position: static;
+    width: 100%;
+    margin-top: 14px;
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .stats,
+  .stats-modern {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .stat-card {
+    width: 100%;
+  }
+
+  .category-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .pill {
+    font-size: 0.92rem;
+    padding: 10px 16px;
+  }
+
+  .section-head h2,
+  .section-head-row h2 {
+    font-size: 2rem;
+  }
+
+  .photo-grid,
+  .photo-grid-modern {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .photo-card-modern,
+  .photo-card {
+    min-height: 280px;
+  }
+
+  .photo-card img {
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .section-link {
+    margin-top: 6px;
+  }
+}
