@@ -1,60 +1,57 @@
 import { Link } from "react-router-dom";
-import { Camera, Bike, Images, Shield } from "lucide-react";
-
-const samplePhotos = [
-  {
-    id: 1,
-    image:
-      "https://images.unsplash.com/photo-1517846693594-1567da72af75?auto=format&fit=crop&w=900&q=80",
-    title: "Street Motion",
-    category: "Motorcycle",
-  },
-  {
-    id: 2,
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    title: "Golden Ride",
-    category: "Random Foto",
-  },
-  {
-    id: 3,
-    image:
-      "https://images.unsplash.com/photo-1494253109108-2e30c049369b?auto=format&fit=crop&w=900&q=80",
-    title: "Urban Speed",
-    category: "Motorcycle",
-  },
-  {
-    id: 4,
-    image:
-      "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=900&q=80",
-    title: "Festival Frame",
-    category: "Random Foto",
-  },
-  {
-    id: 5,
-    image:
-      "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=900&q=80",
-    title: "Fast Lane",
-    category: "Motorcycle",
-  },
-  {
-    id: 6,
-    image:
-      "https://images.unsplash.com/photo-1504203700686-0f59d18b89f9?auto=format&fit=crop&w=900&q=80",
-    title: "Night Story",
-    category: "Random Foto",
-  },
-];
+import { Camera, Bike, Images, Shield, ArrowRight } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import API from "../services/api";
 
 function HomePage() {
+  const [coverPhoto, setCoverPhoto] = useState(null);
+  const [allGalleryPhotos, setAllGalleryPhotos] = useState([]);
+  const [activeCategory, setActiveCategory] = useState("All");
+
+  useEffect(() => {
+    const fetchPhotos = async () => {
+      try {
+        const { data } = await API.get("/photos");
+
+        const cover = data.find((photo) => photo.type === "cover");
+        const gallery = data.filter(
+          (photo) => photo.type === "gallery" && !photo.parentId
+        );
+
+        setCoverPhoto(cover || null);
+        setAllGalleryPhotos(gallery);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchPhotos();
+  }, []);
+
+  const categories = useMemo(() => {
+    const dynamicCategories = [
+      ...new Set(allGalleryPhotos.map((p) => p.category).filter(Boolean)),
+    ];
+    return ["All", ...dynamicCategories];
+  }, [allGalleryPhotos]);
+
+  const galleryPhotos = useMemo(() => {
+    const filtered =
+      activeCategory === "All"
+        ? allGalleryPhotos
+        : allGalleryPhotos.filter((photo) => photo.category === activeCategory);
+
+    return filtered.slice(0, 6);
+  }, [allGalleryPhotos, activeCategory]);
+
   return (
-    <div className="app">
+    <div className="app home-page">
       <header className="navbar">
         <div className="brand">
           <div className="brand-logo">RF</div>
           <div>
             <h1>Random Foto</h1>
-            <p>Modern photography portfolio</p>
+            <p>Photography portfolio</p>
           </div>
         </div>
 
@@ -65,67 +62,89 @@ function HomePage() {
         </nav>
       </header>
 
-      <section className="hero">
+      <section className="hero hero-modern">
         <div className="hero-text">
-          <span className="badge">Photography Portfolio</span>
-          <h2>
-            Random shots, street moments, and mostly
-            <span> motorcycle photography</span>
+          {/* <span className="badge">Photography Portfolio</span> */}
+
+          <h2 className="hero-title-modern">
+            Random shots,
+            <br />
+            street moments,
+            <br />
+            <span> raw photography</span>
           </h2>
-          <p>
-            Showcase your best captures in a clean, dark, modern portfolio.
-            Perfect for your Random Foto brand.
+
+          <p className="hero-subtext">
+            A collection of albums, rides, and lifestyle shots.
           </p>
 
           <div className="hero-buttons">
             <Link to="/gallery" className="btn btn-primary">
               View Gallery
             </Link>
-            <Link to="/admin" className="btn btn-secondary">
+            {/* <Link to="/admin" className="btn btn-secondary">
               Admin Upload
-            </Link>
+            </Link> */}
           </div>
         </div>
 
-        <div className="hero-card">
-          <img
-            src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=80"
-            alt="Motorcycle photography"
-          />
-          <div className="hero-card-overlay">
-            <p>Featured Theme</p>
-            <h3>Motorcycle Frames</h3>
+        <div className="hero-showcase">
+          <div className="hero-image-frame">
+            <img
+              src={
+                coverPhoto?.imageUrl ||
+                "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=80"
+              }
+              alt={coverPhoto?.title || "Cover photo"}
+            />
+          </div>
+
+          <div className="hero-floating-card">
+            <p>{coverPhoto?.category || "Featured Theme"}</p>
+            <h3>{coverPhoto?.title || "Motorcycle Frames"}</h3>
+            <Link to="/gallery" className="hero-inline-link">
+              Explore gallery <ArrowRight size={16} />
+            </Link>
           </div>
         </div>
       </section>
 
-      <section className="stats">
+      <section className="stats stats-modern">
         <div className="stat-card">
           <Camera size={20} />
           <div>
-            <h3>Creative Shots</h3>
-            <p>Portfolio-ready display</p>
+            <h3>{allGalleryPhotos.length}</h3>
+            <p>Total Albums</p>
           </div>
         </div>
-        <div className="stat-card">
-          <Bike size={20} />
-          <div>
-            <h3>Motorcycle Focus</h3>
-            <p>Your signature category</p>
-          </div>
-        </div>
+
         <div className="stat-card">
           <Images size={20} />
           <div>
-            <h3>Modern Gallery</h3>
-            <p>Clean grid layout</p>
+            <h3>{categories.length - 1}</h3>
+            <p>Total Categories</p>
           </div>
         </div>
+
+        <div className="stat-card">
+          <Bike size={20} />
+          <div>
+            <h3>
+              {
+                allGalleryPhotos.filter((photo) =>
+                  String(photo.category || "").toLowerCase().includes("motorcycle")
+                ).length
+              }
+            </h3>
+            <p>Motorcycle Albums</p>
+          </div>
+        </div>
+
         <div className="stat-card">
           <Shield size={20} />
           <div>
-            <h3>Admin Upload</h3>
-            <p>Private upload dashboard</p>
+            <h3>{coverPhoto ? 1 : 0}</h3>
+            <p>Featured Cover</p>
           </div>
         </div>
       </section>
@@ -133,33 +152,46 @@ function HomePage() {
       <section className="categories" id="categories">
         <div className="section-head">
           <p className="section-label">Categories</p>
-          <h2>Your style</h2>
         </div>
 
         <div className="category-pills">
-          <button className="pill active">All</button>
-          <button className="pill">Motorcycle</button>
-          <button className="pill">Street</button>
-          <button className="pill">Events</button>
-          <button className="pill">Random Foto</button>
+          {categories.map((category) => (
+            <button
+              key={category}
+              className={`pill ${activeCategory === category ? "active" : ""}`}
+              onClick={() => setActiveCategory(category)}
+            >
+              {category}
+            </button>
+          ))}
         </div>
       </section>
 
       <section className="gallery-section" id="gallery">
-        <div className="section-head">
-          <p className="section-label">Gallery</p>
-          <h2>Latest photos</h2>
+        <div className="section-head section-head-row">
+          <div>
+            <p className="section-label">Gallery</p>
+            <h2>Latest albums</h2>
+          </div>
+
+          <Link to="/gallery" className="section-link">
+            See all <ArrowRight size={16} />
+          </Link>
         </div>
 
         <div className="photo-grid">
-          {samplePhotos.map((photo) => (
-            <div className="photo-card" key={photo.id}>
-              <img src={photo.image} alt={photo.title} />
+          {galleryPhotos.map((photo) => (
+            <Link
+              to={`/gallery/${photo.id}`}
+              className="photo-card photo-card-modern"
+              key={photo.id}
+            >
+              <img src={photo.imageUrl} alt={photo.title} />
               <div className="photo-overlay">
                 <span>{photo.category}</span>
                 <h3>{photo.title}</h3>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
