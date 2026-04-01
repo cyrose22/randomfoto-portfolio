@@ -1,0 +1,384 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: Inter, system-ui, Arial, sans-serif;
+  color: #f5f7fb;
+  background: #0b0d12;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(255, 0, 92, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(0, 183, 255, 0.18), transparent 24%),
+    #0b0d12;
+  color: #f5f7fb;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+.app {
+  width: min(1200px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 24px 0 60px;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 0 28px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff004c, #7a5cff);
+  box-shadow: 0 10px 30px rgba(122, 92, 255, 0.35);
+}
+
+.brand h1 {
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.brand p {
+  color: #9da7ba;
+  font-size: 0.92rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 22px;
+  color: #b8c1d1;
+}
+
+.nav-links a:hover {
+  color: white;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 24px;
+  align-items: center;
+  padding: 24px 0 30px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  color: #dfe7f7;
+  background: rgba(255, 255, 255, 0.04);
+  margin-bottom: 18px;
+}
+
+.hero-text h2 {
+  font-size: clamp(2.2rem, 5vw, 4.4rem);
+  line-height: 1.02;
+  margin-bottom: 16px;
+  max-width: 700px;
+}
+
+.hero-text h2 span {
+  background: linear-gradient(135deg, #ff547d, #7a5cff, #53d8fb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-text p {
+  color: #a8b2c5;
+  font-size: 1.05rem;
+  max-width: 620px;
+  line-height: 1.7;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.btn {
+  padding: 14px 22px;
+  border-radius: 14px;
+  font-weight: 700;
+  transition: 0.25s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ff004c, #7a5cff);
+  color: white;
+  box-shadow: 0 10px 30px rgba(122, 92, 255, 0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.hero-card {
+  position: relative;
+  min-height: 520px;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #131722;
+}
+
+.hero-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: contrast(1.05);
+}
+
+.hero-card-overlay {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  padding: 18px;
+  border-radius: 20px;
+  background: rgba(9, 11, 16, 0.62);
+  backdrop-filter: blur(10px);
+}
+
+.hero-card-overlay p {
+  color: #cfd7e6;
+  font-size: 0.9rem;
+}
+
+.hero-card-overlay h3 {
+  margin-top: 8px;
+  font-size: 1.4rem;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 28px 0 54px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.stat-card h3 {
+  font-size: 1rem;
+}
+
+.stat-card p {
+  color: #9da7ba;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.section-head {
+  margin-bottom: 18px;
+}
+
+.section-label {
+  color: #8fa0bf;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.76rem;
+  margin-bottom: 8px;
+}
+
+.section-head h2 {
+  font-size: 2rem;
+}
+
+.category-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 34px;
+}
+
+.pill {
+  border: none;
+  color: #dce3ef;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 12px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.pill.active {
+  background: linear-gradient(135deg, #ff004c, #7a5cff);
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.photo-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  min-height: 340px;
+  background: #151925;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.photo-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s ease;
+}
+
+.photo-card:hover img {
+  transform: scale(1.05);
+}
+
+.photo-overlay {
+  position: absolute;
+  inset: auto 16px 16px 16px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(10, 13, 18, 0.58);
+  backdrop-filter: blur(8px);
+}
+
+.photo-overlay span {
+  display: inline-block;
+  color: #c6d4f0;
+  font-size: 0.82rem;
+  margin-bottom: 8px;
+}
+
+.photo-overlay h3 {
+  font-size: 1.12rem;
+}
+
+@media (max-width: 980px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .photo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .stats,
+  .photo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-card {
+    min-height: 360px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+  }
+}
+.admin-page {
+  min-height: 100vh;
+}
+
+.admin-card {
+  max-width: 520px;
+  margin: 80px auto 0;
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-card h2 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-form input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: white;
+  outline: none;
+}
+
+.admin-form input::file-selector-button {
+  margin-right: 12px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ff004c, #7a5cff);
+  color: white;
+  cursor: pointer;
+}
