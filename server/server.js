@@ -54,6 +54,26 @@ app.get("/download/:filename", (req, res) => {
   res.download(filePath);
 });
 
+app.get("/api/init-db", async (req, res) => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS photos (
+        id BIGINT PRIMARY KEY,
+        title TEXT NOT NULL,
+        category TEXT,
+        type TEXT NOT NULL,
+        parent_id BIGINT,
+        image_url TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
+    res.json({ success: true, message: "Database initialized" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, "0.0.0.0", () => {

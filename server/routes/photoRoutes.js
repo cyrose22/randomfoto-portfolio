@@ -2,22 +2,14 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const pool = require("../db");
 
 const router = express.Router();
 
 const uploadPath = path.join(__dirname, "../uploads");
-const dataPath = path.join(__dirname, "../data/photos.json");
 
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
-}
-
-if (!fs.existsSync(path.join(__dirname, "../data"))) {
-  fs.mkdirSync(path.join(__dirname, "../data"), { recursive: true });
-}
-
-if (!fs.existsSync(dataPath)) {
-  fs.writeFileSync(dataPath, JSON.stringify([]));
 }
 
 const storage = multer.diskStorage({
@@ -27,72 +19,96 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-const getPhotos = () => {
-  const data = fs.readFileSync(dataPath, "utf-8");
-  return JSON.parse(data);
-};
-
-const savePhotos = (photos) => {
-  fs.writeFileSync(dataPath, JSON.stringify(photos, null, 2));
-};
-
-router.post("/", upload.single("image"), (req, res) => {
+router.post("/", upload.single("image"), async (req, res) => {
   const { title, category, type } = req.body;
 
   if (!req.file) {
     return res.status(400).json({ message: "Image required" });
   }
 
-  let photos = getPhotos();
+  const id = Date.now();
+  const imageUrl = `https://randomfoto-portfolio.onrender.com/uploads/${req.file.filename}`;
 
-  const photo = {
-    id: Date.now(),
-    title,
-    category,
-    type,
-    imageUrl: `http://localhost:5000/uploads/${req.file.filename}`,
-  };
+  try {
+    if (type === "cover") {
+      await pool.query(`DELETE FROM photos WHERE type = 'cover'`);
+    }
 
-  if (type === "cover") {
-    photos = photos.filter((item) => item.type !== "cover");
+    await pool.query(
+      `INSERT INTO photos (id, title, category, type, image_url)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [id, title, category, type, imageUrl]
+    );
+
+    res.status(201).json({
+      id,
+      title,
+      category,
+      type,
+      imageUrl,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-
-  photos.push(photo);
-  savePhotos(photos);
-
-  res.status(201).json(photo);
 });
 
-router.get("/", (req, res) => {
-  const photos = getPhotos();
-  res.json(photos);
+router.get("/", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT
+        id,
+        title,
+        category,
+        type,
+        parent_id AS "parentId",
+        image_url AS "imageUrl"
+       FROM photos
+       ORDER BY created_at DESC`
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
-router.post("/multi/:id", upload.array("images", 30), (req, res) => {
+router.post("/multi/:id", upload.array("images", 30), async (req, res) => {
   const { id } = req.params;
 
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ message: "Images required" });
   }
 
-  let photos = getPhotos();
+  try {
+    const inserted = [];
 
-  const newPhotos = req.files.map((file) => ({
-    id: Date.now() + Math.floor(Math.random() * 10000),
-    title: `Image ${file.originalname}`,
-    category: "gallery",
-    type: "gallery",
-    parentId: id,
-    imageUrl: `http://localhost:5000/uploads/${file.filename}`,
-  }));
+    for (const file of req.files) {
+      const photoId = Date.now() + Math.floor(Math.random() * 10000);
+      const imageUrl = `https://randomfoto-portfolio.onrender.com/uploads/${file.filename}`;
 
-  photos.push(...newPhotos);
-  savePhotos(photos);
+      await pool.query(
+        `INSERT INTO photos (id, title, category, type, parent_id, image_url)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [photoId, `Image ${file.originalname}`, "gallery", "gallery", id, imageUrl]
+      );
 
-  res.json({
-    message: "Multiple images uploaded",
-    files: newPhotos,
-  });
+      inserted.push({
+        id: photoId,
+        title: `Image ${file.originalname}`,
+        category: "gallery",
+        type: "gallery",
+        parentId: id,
+        imageUrl,
+      });
+    }
+
+    res.json({
+      message: "Multiple images uploaded",
+      files: inserted,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 module.exports = router;
