@@ -1,6 +1,12 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ImagePlus, LayoutTemplate, Tag, UploadCloud, Trash2 } from "lucide-react";
+import {
+  ImagePlus,
+  LayoutTemplate,
+  Tag,
+  UploadCloud,
+  Trash2,
+} from "lucide-react";
 import API from "../services/api";
 
 function AdminDashboardPage() {
@@ -223,9 +229,9 @@ function AdminDashboardPage() {
             {albums.length === 0 ? (
               <p className="admin-side-text">No albums yet.</p>
             ) : (
-              <div className="photo-grid">
+              <div className="admin-album-grid">
                 {albums.map((album) => (
-                  <div key={album.id} style={{ position: "relative" }}>
+                  <div className="admin-album-item" key={album.id}>
                     <Link
                       to={`/admin/dashboard/${album.id}`}
                       className="photo-card photo-card-modern"
@@ -239,17 +245,9 @@ function AdminDashboardPage() {
 
                     <button
                       type="button"
-                      className="btn"
+                      className="btn delete-album-btn"
                       onClick={() => handleDeleteAlbum(album.id)}
                       disabled={deletingId === album.id}
-                      style={{
-                        marginTop: "10px",
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "8px",
-                      }}
                     >
                       <Trash2 size={16} />
                       {deletingId === album.id ? "Deleting..." : "Delete Album"}
