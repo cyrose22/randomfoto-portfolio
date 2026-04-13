@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ImagePlus, LayoutTemplate, Tag, UploadCloud } from "lucide-react";
+import { ImagePlus, LayoutTemplate, Tag, UploadCloud, Trash2 } from "lucide-react";
 import API from "../services/api";
 
 function AdminDashboardPage() {
@@ -14,6 +14,7 @@ function AdminDashboardPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   const fetchAlbums = async () => {
     try {
@@ -81,6 +82,29 @@ function AdminDashboardPage() {
       setError(err.response?.data?.message || "Upload failed");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteAlbum = async (albumId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this album?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setDeletingId(albumId);
+      setMessage("");
+      setError("");
+
+      await API.delete(`/photos/${albumId}`);
+
+      setMessage("Album deleted successfully");
+      await fetchAlbums();
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to delete album");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -201,17 +225,36 @@ function AdminDashboardPage() {
             ) : (
               <div className="photo-grid">
                 {albums.map((album) => (
-                  <Link
-                    to={`/admin/dashboard/${album.id}`}
-                    className="photo-card photo-card-modern"
-                    key={album.id}
-                  >
-                    <img src={album.imageUrl} alt={album.title} />
-                    <div className="photo-overlay">
-                      <span>{album.category}</span>
-                      <h3>{album.title}</h3>
-                    </div>
-                  </Link>
+                  <div key={album.id} style={{ position: "relative" }}>
+                    <Link
+                      to={`/admin/dashboard/${album.id}`}
+                      className="photo-card photo-card-modern"
+                    >
+                      <img src={album.imageUrl} alt={album.title} />
+                      <div className="photo-overlay">
+                        <span>{album.category}</span>
+                        <h3>{album.title}</h3>
+                      </div>
+                    </Link>
+
+                    <button
+                      type="button"
+                      className="btn"
+                      onClick={() => handleDeleteAlbum(album.id)}
+                      disabled={deletingId === album.id}
+                      style={{
+                        marginTop: "10px",
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <Trash2 size={16} />
+                      {deletingId === album.id ? "Deleting..." : "Delete Album"}
+                    </button>
+                  </div>
                 ))}
               </div>
             )}
