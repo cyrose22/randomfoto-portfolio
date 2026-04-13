@@ -111,4 +111,46 @@ router.post("/multi/:id", upload.array("images", 30), async (req, res) => {
   }
 });
 
+// DELETE ALBUM + CHILD PHOTOS
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // get album + child photos first so we can remove image files too
+    const result = await pool.query(
+      `SELECT id, image_url AS "imageUrl"
+       FROM photos
+       WHERE id = $1 OR parent_id = $1`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Album not found" });
+    }
+
+    // delete database rows
+    await pool.query(
+      `DELETE FROM photos
+       WHERE id = $1 OR parent_id = $1`,
+      [id]
+    );
+
+    // delete files from uploads folder
+    for (const photo of result.rows) {
+      if (!photo.imageUrl) continue;
+
+      const fileName = photo.imageUrl.split("/").pop();
+      const filePath = path.join(uploadPath, fileName);
+
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+
+    res.json({ message: "Album and related photos deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;
